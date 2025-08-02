@@ -1,10 +1,15 @@
 const express = require('express');
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// Root route (optioneel, zodat '/' geen error geeft)
+app.get('/', (req, res) => {
+  res.send("Server is running.");
+});
 
 app.post('/webhook/ping-servers', async (req, res) => {
   try {
@@ -19,7 +24,6 @@ app.post('/webhook/ping-servers', async (req, res) => {
     const data = await response.json();
     console.log("Server response:", data);
 
-    // Send to Discord
     await fetch("https://discord.com/api/webhooks/1401309163010785350/yfRpTvI8t97GqSQwTQqtCC0mAV_ig7xFyraMKh_LgP6hEL3yfMVHXHc-abdzhWTUBOt4", {
       method: "POST",
       headers: {
